@@ -39,7 +39,7 @@ def login():
 		response = {
 			"raspuns":"wrong password"
 		}
-
+	db.close()
 	return json.dumps(response)
 
 @app.route("/register", methods=["GET","POST"])
@@ -48,12 +48,30 @@ def register():
 	json_data = request.get_json()
 	dict_data = json.loads(json.dumps(json_data))
 	try:
-		db = open('db.csv','a')
+		db = open('db.csv')
 		row = str(dict_data['email'])+","+str(dict_data['password'])+"\n"
-		db.write(row)
-		print('nume si parola adaugate')
+
+		checkFlag = 0
+		csvreader = csv.reader(db)
+		header = next(csvreader)
+
+		for xrow in csvreader:
+			print(list(xrow)[0],list(xrow)[1])
+
+			if list(xrow)[0] == dict_data['email'] and list(xrow)[1] == dict_data['password']:
+				print('neh')
+				checkFlag = 1
 		db.close()
-		response = 'user adaugat'
+		db = open('db.csv','a')
+		print(dict_data['email'])
+		print(dict_data['password'])
+		if(checkFlag == 0):
+			db.write(row)
+			print('nume si parola adaugate')
+			response = 'user adaugat'
+		db.close()
+		if(checkFlag == 1):
+			response = 'userul exista deja'
 		return json.dumps(response)
 	except Exception as e:
 		print('a aparut o eroare',e)
