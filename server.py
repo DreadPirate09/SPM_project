@@ -59,7 +59,6 @@ def register():
 			print(list(xrow)[0],list(xrow)[1])
 
 			if list(xrow)[0] == dict_data['email'] and list(xrow)[1] == dict_data['password']:
-				print('neh')
 				checkFlag = 1
 		db.close()
 		db = open('db.csv','a')
